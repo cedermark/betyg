@@ -1,0 +1,129 @@
+namespace Betygsstatistik_Johan_Cedermark
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] ämnen = { "Matematik", "Svenska", "Engelska", "Historia", "Fysik" };
+            int[] poäng = new int[5];
+            char[] betyg = new char[5];
+
+            Console.WriteLine("--------------------------------------------------------");
+            Console.WriteLine("Välkommen till detta program som registrerar dina poäng");
+            Console.WriteLine("och konverterar dem till ditt färdiga betyg!");
+            Console.WriteLine("--------------------------------------------------------");
+
+            LäsPoäng(ämnen, poäng);
+            OmvandlaPoäng(poäng, betyg);
+            SkrivUtBetyg(ämnen, betyg);
+            Statistik(betyg, poäng);
+        }
+
+        // Metod som läser in användarens poäng och sparar poängen i respektive vektor
+        static void LäsPoäng(string[] ämnen, int[] poäng)
+        {
+            for (int i = 0; i < ämnen.Length; i++)
+            {
+                int inmatning = -1; // viktigt att detta värde startar som -1 då programmet annars körs och alla betyg automatiskt blir ett F utan att användare får skriva in egna
+                while (inmatning < 0 || inmatning > 100)
+                {
+                    Console.WriteLine($"Hur många poäng fick du i {ämnen[i]}? (0-100)");
+                    string elevInput = Console.ReadLine();
+                    bool korrektInput = int.TryParse(elevInput, out inmatning); // omvandlar användares inmatning och returnerar TRUE om det lyckas
+                    if (!korrektInput || inmatning < 0 || inmatning > 100) // om användare angett felaktigt värde (FALSE) korrigeras loopen till att återgå till samma fråga
+                    {
+                        Console.WriteLine("Du har angett felaktig inmatning, försök igen: ");
+                        inmatning = -1;
+                    }
+                }
+                poäng[i] = inmatning;
+
+            }
+        }
+
+        // Metod som omvandlar poängen till ett betyg mellan A-F
+        static void OmvandlaPoäng(int[] poäng, char[] betyg)
+        {
+            for (int i = 0; i < poäng.Length; i++)
+            {
+                int p = poäng[i];
+                if (p == 100) 
+                { 
+                    betyg[i] = 'A';
+                }
+                else if (p >= 90)
+                {
+                    betyg[i] = 'B';
+                }
+                else if (p >= 80)
+                {
+                    betyg[i] = 'C';
+                }
+                else if (p >= 70)
+                {
+                    betyg[i] = 'D';
+                }
+                else if (p >= 50)
+                {
+                    betyg[i] = 'E';
+                }
+                else
+                {
+                    betyg[i] = 'F';
+                }
+            }
+        }
+        
+        // skriver ut elevens betyg
+        static void SkrivUtBetyg(string[] ämnen, char[] betyg)
+        {
+            Console.Clear();
+            Console.WriteLine("-------------------------------------");
+            for (int i = 0; i < ämnen.Length; i++)
+            {
+                Console.WriteLine($"I ämnet {ämnen[i]} fick du betyget: {betyg[i]}");
+            }
+            Console.WriteLine("-------------------------------------");
+        }
+
+        // metod som skriver ut statistik om antal betyg och poäng
+        static void Statistik(char[] betyg, int[] poäng)
+        {
+            int betygA = 0;
+            int betygC = 0;
+            int betygF = 0;
+            int totalPoäng = 0;
+
+            // loopen kollar hur många antal A, C och F betyg eleven fått
+            for (int i = 0; i < betyg.Length; i++)
+            {
+                if (betyg[i] == 'A')
+                {
+                    betygA++;
+                }
+                else if (betyg[i] == 'C')
+                {
+                    betygC++;
+                }
+                else if (betyg[i] == 'F')
+                {
+                    betygF++;
+                }
+            }
+
+            // räknar ihop totalsumman av alla poäng
+            for (int i = 0; i < poäng.Length; i++)
+            {
+                totalPoäng += poäng[i];
+            }
+            
+            // skriver ut statistiken till konsolen
+            Console.WriteLine("------ Statistik ------");
+            Console.WriteLine($"Du har fått {betygA} A betyg.");
+            Console.WriteLine($"Du har fått {betygC} C betyg.");
+            Console.WriteLine($"Du har fått {betygF} F betyg.");
+            Console.WriteLine($"Din totala poäng är: {totalPoäng}");
+            Console.WriteLine("-----------------------");
+        }
+    }
+}
